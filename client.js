@@ -1,4 +1,6 @@
-module.exports = function(url, handle) {
+var events = [];
+
+export function on(url, handle) {
 
   if (typeof url == 'function') {
     handle = url
@@ -43,13 +45,34 @@ module.exports = function(url, handle) {
   }
 
   var init = function() {
-    var source = new EventSource(url)
-    source.onmessage = function(ev) {
-      handle(JSON.parse(ev.data))
+    if (!events[url]) {
+      events[url] = {
+        source: new EventSource(url),
+        handlers: [ handle ]
+      }
+      events[url].source.onmessage = function(ev) {
+        events[url].handlers.forEach(function(handle) {
+          handle(JSON.parse(ev.data))
+        })
+      }
+    }
+    else {
+      events[url].handlers.push(handle);
     }
   }
 
   if (!window.EventSource) init = createIframe
-  if (window.attachEvent) attachEvent('onload', init)
-  else addEventListener('load', init)
+
+  init();
+
+  //if (window.attachEvent) attachEvent('onload', init)
+  //else addEventListener('load', init)
+}
+
+export function off(url, handle) {
+  if (events[url]) {
+    events[url].handlers = events[url].handlers.filter(function(f) {
+      return f !== handle;
+    });
+  }
 }
