@@ -14,7 +14,7 @@ module.exports = function(mount) {
 
   function Client(req, res) {
     this.id = id++
-    this.headers = req.headers
+    this.req = req
     this.res = res
 
     this.send = req.headers.accept == 'text/event-stream'
