@@ -67,7 +67,7 @@ function remove(item, array) {
  */
 function sse(client) {
   client.res.setTimeout(0)
-  client.res.cookie('app.pid', client.id, {
+  client.res.cookie('sse.cid', client.id, {
     httpOnly: false,
     secure: true
   })
