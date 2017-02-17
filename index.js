@@ -67,10 +67,6 @@ function remove(item, array) {
  */
 function sse(client) {
   client.res.setTimeout(0)
-  client.res.cookie('sse.cid', client.id, {
-    httpOnly: false,
-    secure: true
-  })
   client.res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
